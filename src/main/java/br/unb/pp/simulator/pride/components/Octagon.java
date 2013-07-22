@@ -29,6 +29,10 @@ public class Octagon {
 		return manager.call(name);
 	}
 
+	public AgentController hear(String name) throws StaleProxyException {
+		return manager.show(name);
+	}
+
 	public void end() {
 		end();
 	}

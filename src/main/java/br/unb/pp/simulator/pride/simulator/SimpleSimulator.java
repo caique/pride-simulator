@@ -11,6 +11,7 @@ public class SimpleSimulator {
 
 		System.out.println("Regular Fight ------------------------");
 
+		octagon.hear("Milton Leite");
 		octagon.sees("Anderson Silva");
 		octagon.sees("Vitor Belfort");
 		octagon.assumes("Herb Dean");

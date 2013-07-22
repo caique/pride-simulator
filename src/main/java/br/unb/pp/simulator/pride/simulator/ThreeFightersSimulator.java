@@ -11,6 +11,7 @@ public class ThreeFightersSimulator {
 
 		System.out.println("Three Fighters Fight ------------------------");
 
+		octagon.hear("Milton Leite");
 		octagon.sees("Anderson Silva");
 		octagon.sees("Vitor Belfort");
 		octagon.sees("Lyoto Machida");

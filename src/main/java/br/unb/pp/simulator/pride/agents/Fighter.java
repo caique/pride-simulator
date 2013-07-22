@@ -3,6 +3,7 @@ package br.unb.pp.simulator.pride.agents;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
+import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
@@ -19,11 +20,13 @@ public class Fighter extends Agent {
 
 	private String name;
 	protected AID referee;
+	protected AID broadcaster;
 	protected int hits;
 
 	@Override
 	protected void setup() {
 		enterTheOctogon();
+		waveToTheAudience();
 		beReady();
 		fight();
 	}
@@ -55,6 +58,30 @@ public class Fighter extends Agent {
 		}
 
 		this.hits = Octagon.HITS;
+	}
+
+	private void waveToTheAudience() {
+		DFAgentDescription template = new DFAgentDescription();
+		ServiceDescription sd = new ServiceDescription();
+		sd.setType("broadcast");
+		template.addServices(sd);
+
+		try {
+			DFAgentDescription[] broadcastersFounded = DFService.search(this,
+					template);
+
+			if (broadcastersFounded.length > 0) {
+				broadcaster = broadcastersFounded[0].getName();
+			}
+
+			if (broadcaster != null) {
+				reportThat(name + Messages.LOOK_THE_AUDIENCE + "!");
+			} else {
+				System.out.println(Messages.BROADCASTER_NOT_FOUND);
+			}
+		} catch (FIPAException e) {
+			System.out.println(Messages.FINISH_FIGHT);
+		}
 	}
 
 	private void beReady() {
@@ -205,8 +232,20 @@ public class Fighter extends Agent {
 		});
 	}
 
-	protected void reportThat(String content) {
-		System.out.println(content);
+	protected void reportThat(final String content) {
+		addBehaviour(new OneShotBehaviour(this) {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void action() {
+				ACLMessage report = new ACLMessage(ACLMessage.INFORM);
+				report.addReceiver(broadcaster);
+				report.setLanguage("report");
+				report.setContent(content);
+				myAgent.send(report);
+			}
+		});
 	}
 
 	protected void takeDown() {

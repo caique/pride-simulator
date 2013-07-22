@@ -24,10 +24,12 @@ public class Referee extends Agent {
 
 	private String name;
 	private List<AID> fighters;
+	private AID broadcaster;
 
 	@Override
 	protected void setup() {
 		enterTheOctogon();
+		waveToTheAudience();
 		lookToFighters();
 		startCombat();
 		controlFight();
@@ -54,6 +56,30 @@ public class Referee extends Agent {
 
 		try {
 			DFService.register(this, dfd);
+		} catch (FIPAException e) {
+			System.out.println(Messages.FINISH_FIGHT);
+		}
+	}
+
+	private void waveToTheAudience() {
+		DFAgentDescription template = new DFAgentDescription();
+		ServiceDescription sd = new ServiceDescription();
+		sd.setType("broadcast");
+		template.addServices(sd);
+
+		try {
+			DFAgentDescription[] broadcastersFounded = DFService.search(this,
+					template);
+
+			if (broadcastersFounded.length > 0) {
+				broadcaster = broadcastersFounded[0].getName();
+			}
+
+			if (broadcaster != null) {
+				reportThat(name + Messages.LOOK_THE_AUDIENCE + "!");
+			} else {
+				System.out.println(Messages.BROADCASTER_NOT_FOUND);
+			}
 		} catch (FIPAException e) {
 			System.out.println(Messages.FINISH_FIGHT);
 		}
@@ -89,11 +115,11 @@ public class Referee extends Agent {
 
 			@Override
 			public void action() {
-				if(fighters.size() > 1){
+				if (fighters.size() > 1) {
 					ACLMessage instruction = new ACLMessage(ACLMessage.INFORM);
 					instruction.setLanguage("instruction");
 					instruction.setContent(Messages.FIGHT);
-					
+
 					for (AID fighter : fighters) {
 						instruction.addReceiver(fighter);
 					}
@@ -104,7 +130,7 @@ public class Referee extends Agent {
 				}
 			}
 		});
-		
+
 	}
 
 	private void controlFight() {
@@ -207,12 +233,26 @@ public class Referee extends Agent {
 			itsOver.addReceiver(fighter);
 		}
 
+		itsOver.addReceiver(broadcaster);
+
 		send(itsOver);
 		doDelete();
 	}
 
-	protected void reportThat(String content) {
-		System.out.println(content);
+	protected void reportThat(final String content) {
+		addBehaviour(new OneShotBehaviour(this) {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void action() {
+				ACLMessage report = new ACLMessage(ACLMessage.INFORM);
+				report.addReceiver(broadcaster);
+				report.setLanguage("report");
+				report.setContent(content);
+				myAgent.send(report);
+			}
+		});
 	}
 
 	protected void takeDown() {
@@ -221,7 +261,6 @@ public class Referee extends Agent {
 		try {
 			DFService.deregister(this);
 		} catch (FIPAException e) {
-			e.printStackTrace();
 		}
 	}
 }

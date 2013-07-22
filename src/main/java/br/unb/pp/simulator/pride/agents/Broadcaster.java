@@ -13,41 +13,45 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 
-public class Broadcast extends Agent {
+public class Broadcaster extends Agent {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
-	protected ArrayList<String> messages;
+	private String name;
+	protected ArrayList<String> events;
 
 	protected void setup() {
-		AID aid = new AID("broadcaster",AID.ISLOCALNAME);
+		Object[] args = getArguments();
+
+		if (args != null && args.length > 0) {
+			this.name = (String) args[0];
+			new AID(name, AID.ISLOCALNAME);
+		} else {
+			System.out.println(Messages.BROADCASTER_WITHOUT_NAME);
+		}
+
 		DFAgentDescription dfd = new DFAgentDescription();
 		dfd.setName(getAID());
 
 		ServiceDescription sd = new ServiceDescription();
-		sd.setType("broadcaster");
-		sd.setName("broadcast");
+		sd.setType("broadcast");
+		sd.setName("broadcaster");
 		dfd.addServices(sd);
 
 		try {
 			DFService.register(this, dfd);
 
+			if (events == null) {
+				events = new ArrayList<String>();
+			}
 		} catch (FIPAException e) {
 			System.out.println(Messages.FINISH_FIGHT);
 		}
 
-		if (messages == null) {
-			messages = new ArrayList<String>();
-		}
-
-		waitformessage();
-
+		waitForReport();
 	}
 
-	private void waitformessage() {
+	private void waitForReport() {
 
 		addBehaviour(new CyclicBehaviour(this) {
 
@@ -56,22 +60,19 @@ public class Broadcast extends Agent {
 			@Override
 			public void action() {
 				MessageTemplate template = MessageTemplate.and(
-						MessageTemplate.MatchLanguage("message"),
-						MessageTemplate.MatchLanguage("message"));
+						MessageTemplate.MatchPerformative(ACLMessage.INFORM),
+						MessageTemplate.MatchLanguage("report"));
 
-				ACLMessage message = myAgent.receive(template);
+				ACLMessage report = myAgent.receive(template);
 
-				if (message != null) {
-					messages.add(message.getContent());
+				if (report != null) {
+					events.add(report.getContent());
 				} else {
-					block();
+					// block();
 				}
 			}
 		});
 
-	}
-
-	private void waitforreport() {
 		addBehaviour(new CyclicBehaviour(this) {
 
 			private static final long serialVersionUID = 1L;
@@ -85,27 +86,22 @@ public class Broadcast extends Agent {
 				ACLMessage over = myAgent.receive(template);
 
 				if (over != null) {
-					for (String message : messages) {
-
+					for (String message : events) {
 						System.out.println(message);
 					}
 
 					myAgent.doDelete();
-				} else {
-					block();
 				}
 			}
 		});
-
 	}
 
 	protected void takeDown() {
+		System.out.println("Everybody " + Messages.LEFT_THE_OCTOGON + "!");
 
-		System.out.println("=D");
 		try {
 			DFService.deregister(this);
 		} catch (FIPAException e) {
-
 		}
 	}
 

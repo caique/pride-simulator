@@ -11,6 +11,7 @@ public class TenFightersSimulator {
 
 		System.out.println("Ten Fighters Fight ------------------------");
 
+		octagon.hear("Milton Leite");
 		octagon.sees("José Aldo");
 		octagon.sees("Anderson Silva");
 		octagon.sees("Vitor Belfort");
@@ -23,7 +24,6 @@ public class TenFightersSimulator {
 		octagon.sees("Wanderlei Silva");
 		octagon.assumes("Herb Dean");
 		octagon.assumes("Mario Yamasaki");
-		octagon.assumes("Jonas");
 	}
 
 }

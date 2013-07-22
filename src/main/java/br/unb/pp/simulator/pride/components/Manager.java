@@ -45,4 +45,17 @@ public class Manager {
 		return referee;
 	}
 
+	public AgentController show(String name) throws StaleProxyException {
+		Object[] argsForBroadcaster = new Object[1];
+		argsForBroadcaster[0] = name;
+
+		AgentController broadcaster = container.createNewAgent(name,
+				"br.unb.pp.simulator.pride.agents.Broadcaster",
+				argsForBroadcaster);
+
+		broadcaster.start();
+
+		return broadcaster;
+	}
+
 }
