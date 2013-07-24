@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import br.unb.pp.broadcast.behaviours.ReportBehaviour;
 import br.unb.pp.simulator.pride.messages.Messages;
 
 public class Referee extends Agent {
@@ -240,19 +241,7 @@ public class Referee extends Agent {
 	}
 
 	protected void reportThat(final String content) {
-		addBehaviour(new OneShotBehaviour(this) {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void action() {
-				ACLMessage report = new ACLMessage(ACLMessage.INFORM);
-				report.addReceiver(broadcaster);
-				report.setLanguage("report");
-				report.setContent(content);
-				myAgent.send(report);
-			}
-		});
+		addBehaviour(new ReportBehaviour(content, broadcaster));
 	}
 
 	protected void takeDown() {

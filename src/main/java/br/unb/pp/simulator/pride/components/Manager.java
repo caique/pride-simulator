@@ -50,7 +50,7 @@ public class Manager {
 		argsForBroadcaster[0] = name;
 
 		AgentController broadcaster = container.createNewAgent(name,
-				"br.unb.pp.simulator.pride.agents.Broadcaster",
+				"br.unb.pp.broadcast.agents.Broadcaster",
 				argsForBroadcaster);
 
 		broadcaster.start();

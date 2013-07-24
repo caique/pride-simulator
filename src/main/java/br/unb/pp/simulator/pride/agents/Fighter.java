@@ -3,7 +3,6 @@ package br.unb.pp.simulator.pride.agents;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
-import jade.core.behaviours.OneShotBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAException;
@@ -11,6 +10,7 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
+import br.unb.pp.broadcast.behaviours.ReportBehaviour;
 import br.unb.pp.simulator.pride.components.Octagon;
 import br.unb.pp.simulator.pride.messages.Messages;
 
@@ -233,19 +233,7 @@ public class Fighter extends Agent {
 	}
 
 	protected void reportThat(final String content) {
-		addBehaviour(new OneShotBehaviour(this) {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public void action() {
-				ACLMessage report = new ACLMessage(ACLMessage.INFORM);
-				report.addReceiver(broadcaster);
-				report.setLanguage("report");
-				report.setContent(content);
-				myAgent.send(report);
-			}
-		});
+		addBehaviour(new ReportBehaviour(content, broadcaster));
 	}
 
 	protected void takeDown() {
