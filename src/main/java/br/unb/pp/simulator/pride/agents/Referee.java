@@ -15,8 +15,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import br.unb.pp.broadcast.agents.ObservableAgent;
 import br.unb.pp.simulator.pride.messages.Messages;
+import br.unb.sma.utils.broadcast.agents.ObservableAgent;
 
 public class Referee extends ObservableAgent {
 
