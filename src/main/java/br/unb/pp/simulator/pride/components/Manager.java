@@ -49,13 +49,15 @@ public class Manager {
 		Object[] argsForBroadcaster = new Object[1];
 		argsForBroadcaster[0] = name;
 
+		/*
+		 * Broadcaster was initialized from the class contained in the
+		 * dependence Broadcast
+		 */
 		AgentController broadcaster = container.createNewAgent(name,
-				"br.unb.pp.broadcast.agents.Broadcaster",
-				argsForBroadcaster);
+				"br.unb.pp.broadcast.agents.Broadcaster", argsForBroadcaster);
 
 		broadcaster.start();
 
 		return broadcaster;
 	}
-
 }

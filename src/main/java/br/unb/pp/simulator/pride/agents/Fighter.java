@@ -1,7 +1,6 @@
 package br.unb.pp.simulator.pride.agents;
 
 import jade.core.AID;
-import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.TickerBehaviour;
 import jade.domain.DFService;
@@ -10,23 +9,21 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
-import br.unb.pp.broadcast.behaviours.ReportBehaviour;
+import br.unb.pp.broadcast.agents.ObservableAgent;
 import br.unb.pp.simulator.pride.components.Octagon;
 import br.unb.pp.simulator.pride.messages.Messages;
 
-public class Fighter extends Agent {
+public class Fighter extends ObservableAgent {
 
 	private static final long serialVersionUID = 1L;
 
 	private String name;
 	protected AID referee;
-	protected AID broadcaster;
 	protected int hits;
 
-	@Override
 	protected void setup() {
 		enterTheOctogon();
-		waveToTheAudience();
+		findBroadcast();
 		beReady();
 		fight();
 	}
@@ -60,30 +57,6 @@ public class Fighter extends Agent {
 		this.hits = Octagon.HITS;
 	}
 
-	private void waveToTheAudience() {
-		DFAgentDescription template = new DFAgentDescription();
-		ServiceDescription sd = new ServiceDescription();
-		sd.setType("broadcast");
-		template.addServices(sd);
-
-		try {
-			DFAgentDescription[] broadcastersFounded = DFService.search(this,
-					template);
-
-			if (broadcastersFounded.length > 0) {
-				broadcaster = broadcastersFounded[0].getName();
-			}
-
-			if (broadcaster != null) {
-				reportThat(name + Messages.LOOK_THE_AUDIENCE + "!");
-			} else {
-				System.out.println(Messages.BROADCASTER_NOT_FOUND);
-			}
-		} catch (FIPAException e) {
-			System.out.println(Messages.FINISH_FIGHT);
-		}
-	}
-
 	private void beReady() {
 		DFAgentDescription template = new DFAgentDescription();
 		ServiceDescription sd = new ServiceDescription();
@@ -102,7 +75,7 @@ public class Fighter extends Agent {
 				reportThat(name + Messages.LOOK_THE_REFEREE
 						+ referee.getLocalName() + "!");
 			} else {
-				reportThat(Messages.REFEREE_NOT_FOUND);
+				beReady();
 			}
 
 		} catch (FIPAException e) {
@@ -230,10 +203,6 @@ public class Fighter extends Agent {
 				}
 			}
 		});
-	}
-
-	protected void reportThat(final String content) {
-		addBehaviour(new ReportBehaviour(content, broadcaster));
 	}
 
 	protected void takeDown() {

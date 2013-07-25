@@ -1,7 +1,6 @@
 package br.unb.pp.simulator.pride.agents;
 
 import jade.core.AID;
-import jade.core.Agent;
 import jade.core.behaviours.CyclicBehaviour;
 import jade.core.behaviours.OneShotBehaviour;
 import jade.domain.DFService;
@@ -16,21 +15,20 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import br.unb.pp.broadcast.behaviours.ReportBehaviour;
+import br.unb.pp.broadcast.agents.ObservableAgent;
 import br.unb.pp.simulator.pride.messages.Messages;
 
-public class Referee extends Agent {
+public class Referee extends ObservableAgent {
 
 	private static final long serialVersionUID = 1L;
 
 	private String name;
 	private List<AID> fighters;
-	private AID broadcaster;
 
 	@Override
 	protected void setup() {
 		enterTheOctogon();
-		waveToTheAudience();
+		findBroadcast();
 		lookToFighters();
 		startCombat();
 		controlFight();
@@ -57,30 +55,6 @@ public class Referee extends Agent {
 
 		try {
 			DFService.register(this, dfd);
-		} catch (FIPAException e) {
-			System.out.println(Messages.FINISH_FIGHT);
-		}
-	}
-
-	private void waveToTheAudience() {
-		DFAgentDescription template = new DFAgentDescription();
-		ServiceDescription sd = new ServiceDescription();
-		sd.setType("broadcast");
-		template.addServices(sd);
-
-		try {
-			DFAgentDescription[] broadcastersFounded = DFService.search(this,
-					template);
-
-			if (broadcastersFounded.length > 0) {
-				broadcaster = broadcastersFounded[0].getName();
-			}
-
-			if (broadcaster != null) {
-				reportThat(name + Messages.LOOK_THE_AUDIENCE + "!");
-			} else {
-				System.out.println(Messages.BROADCASTER_NOT_FOUND);
-			}
 		} catch (FIPAException e) {
 			System.out.println(Messages.FINISH_FIGHT);
 		}
@@ -208,6 +182,13 @@ public class Referee extends Agent {
 				ACLMessage knockout = myAgent.receive(template);
 
 				if (knockout != null) {
+					if (broadcaster == null) {
+						System.out.println("Broadcaster off!");
+					} else {
+						System.out
+								.println("Devia ter avisado sobre o knockout!");
+					}
+
 					reportThat(knockout.getContent());
 
 					fighters.remove(knockout.getSender());
@@ -225,6 +206,7 @@ public class Referee extends Agent {
 	}
 
 	private void endCombat() {
+		System.out.println("Devia ter avisado sobre o final da luta!");
 		reportThat(Messages.OVER);
 
 		ACLMessage itsOver = new ACLMessage(ACLMessage.INFORM);
@@ -234,14 +216,8 @@ public class Referee extends Agent {
 			itsOver.addReceiver(fighter);
 		}
 
-		itsOver.addReceiver(broadcaster);
-
 		send(itsOver);
 		doDelete();
-	}
-
-	protected void reportThat(final String content) {
-		addBehaviour(new ReportBehaviour(content, broadcaster));
 	}
 
 	protected void takeDown() {
