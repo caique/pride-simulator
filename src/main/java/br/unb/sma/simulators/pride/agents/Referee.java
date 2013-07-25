@@ -1,4 +1,4 @@
-package br.unb.pp.simulator.pride.agents;
+package br.unb.sma.simulators.pride.agents;
 
 import jade.core.AID;
 import jade.core.behaviours.CyclicBehaviour;
@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import br.unb.pp.simulator.pride.messages.Messages;
+import br.unb.sma.simulators.pride.messages.Messages;
 import br.unb.sma.utils.broadcast.agents.ObservableAgent;
 
 public class Referee extends ObservableAgent {

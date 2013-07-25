@@ -1,4 +1,4 @@
-package br.unb.pp.simulator.pride.agents;
+package br.unb.sma.simulators.pride.agents;
 
 import jade.core.AID;
 import jade.core.behaviours.CyclicBehaviour;
@@ -9,8 +9,8 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
-import br.unb.pp.simulator.pride.components.Octagon;
-import br.unb.pp.simulator.pride.messages.Messages;
+import br.unb.sma.simulators.pride.components.Octagon;
+import br.unb.sma.simulators.pride.messages.Messages;
 import br.unb.sma.utils.broadcast.agents.ObservableAgent;
 
 public class Fighter extends ObservableAgent {

@@ -1,7 +1,7 @@
-package br.unb.pp.simulator.pride.simulator;
+package br.unb.sma.simulators.pride.simulators;
 
 import jade.wrapper.StaleProxyException;
-import br.unb.pp.simulator.pride.components.Octagon;
+import br.unb.sma.simulators.pride.components.Octagon;
 
 public class ThreeFightersSimulator {
 

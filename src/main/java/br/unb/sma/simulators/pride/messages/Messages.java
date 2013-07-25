@@ -1,13 +1,13 @@
-package br.unb.pp.simulator.pride.messages;
+package br.unb.sma.simulators.pride.messages;
 
 public class Messages {
 
 	/**
 	 * Agents paths
 	 */
-	public static final String FIGHTER_CLASS = "br.unb.pp.simulator.pride.agents.Fighter";
-	public static final String REFEREE_CLASS = "br.unb.pp.simulator.pride.agents.Referee";
-	public static final String BROADCASTER_CLASS = "br.unb.pp.simulator.pride.agents.Broadcaster";
+	public static final String FIGHTER_CLASS = "br.unb.sma.simulators.pride.agents.Fighter";
+	public static final String REFEREE_CLASS = "br.unb.sma.simulators.pride.agents.Referee";
+	public static final String BROADCASTER_CLASS = "br.unb.sma.utils.broadcast.agents.Broadcaster";
 
 	/**
 	 * Error events

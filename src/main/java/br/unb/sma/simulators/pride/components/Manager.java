@@ -1,8 +1,9 @@
-package br.unb.pp.simulator.pride.components;
+package br.unb.sma.simulators.pride.components;
 
 import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
+import br.unb.sma.simulators.pride.messages.Messages;
 
 public class Manager {
 
@@ -26,7 +27,7 @@ public class Manager {
 		argsForFighter[0] = name;
 
 		AgentController fighter = container.createNewAgent(name,
-				"br.unb.pp.simulator.pride.agents.Fighter", argsForFighter);
+				Messages.FIGHTER_CLASS, argsForFighter);
 
 		fighter.start();
 
@@ -38,7 +39,7 @@ public class Manager {
 		argsForReferee[0] = name;
 
 		AgentController referee = container.createNewAgent(name,
-				"br.unb.pp.simulator.pride.agents.Referee", argsForReferee);
+				Messages.REFEREE_CLASS, argsForReferee);
 
 		referee.start();
 
@@ -54,7 +55,7 @@ public class Manager {
 		 * dependence Broadcast
 		 */
 		AgentController broadcaster = container.createNewAgent(name,
-				"br.unb.pp.broadcast.agents.Broadcaster", argsForBroadcaster);
+				Messages.BROADCASTER_CLASS, argsForBroadcaster);
 
 		broadcaster.start();
 

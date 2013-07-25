@@ -1,4 +1,4 @@
-package br.unb.pp.simulator.pride.components;
+package br.unb.sma.simulators.pride.components;
 
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
